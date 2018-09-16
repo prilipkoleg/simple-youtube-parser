@@ -1,0 +1,5 @@
+.idea
+.env
+channels.csv
+node_modules
+uploads/*
