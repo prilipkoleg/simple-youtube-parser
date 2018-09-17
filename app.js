@@ -4,6 +4,7 @@ const GoogleApis = require('googleapis');
 
 const config = require('./config');
 const mainParser = require('./services/parcer');
+const xlsxWriter = require('./services/writer').Xlsx;
 
 const { youtube_v3 } = GoogleApis;
 const Youtube = new youtube_v3.Youtube({auth: config.main.apiKey});
@@ -18,6 +19,7 @@ const channelsList = channelsFileData && channelsFileData.split(config.main.chan
 
 if (!channelsList.length) throw new Error('channels.csv file contains wrong Data!');
 
+let storage = [];
 const STEP_LIMIT = 50;
 const total = channelsList.length;
 let done = 0;
@@ -41,7 +43,13 @@ function make_step() {
   }
 
   if (finish) {
-    nextThen = () => console.log('Finished!', `Done: '${done}'`, `Total: '${total}'`);
+    // nextThen = () => console.log('Finished!', `Done: '${done}'`, `Total: '${total}'`);
+    nextThen = () => {
+      console.log('Finished!', `Done: '${done}'`, `Total: '${total}'`);
+      const XlsxWriter = new xlsxWriter();
+      console.log(storage.length);
+      return XlsxWriter.write(storage, 'all_in')
+    }
   } else {
     nextThen = () => {
       console.log('STEP:', `Done: '${done}'`, `Total: '${total}'`);
@@ -55,10 +63,11 @@ function make_step() {
 
 function parseChannel(channelId, clearBefore = false) {
   const MainParser = new mainParser(Youtube);
+  const promise = clearBefore
+    ? xlsxWriter.clearUploadsDir().then(() => MainParser.start(channelId))
+    : MainParser.start(channelId);
 
-  return (clearBefore)
-    ? mainParser.clearUploadsDir().then(MainParser.start(channelId))
-    : MainParser.start(channelId)
+  return promise.then((data) => storage = storage.concat(data));
 }
 
 return make_step();//.then(() => console.log('Stop'));

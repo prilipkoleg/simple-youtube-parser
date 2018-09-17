@@ -15,7 +15,7 @@ const config = {
   },
 
   // ------
-  uploadsDir: 'uploads',
+  uploadsDir: '__results',
 };
 
 module.exports = config;

@@ -1,9 +1,6 @@
-const fs = require('fs');
-const fsExtra = require('fs-extra');
-const json2xls = require('json2xls');
-
 const Channel = require('./Channel');
 const Video = require('./Video');
+const writers = require('../writer');
 const config = require('../../config').parser;
 
 class MainParser {
@@ -20,24 +17,15 @@ class MainParser {
       this.VideoParser.getData(channelId)
     ])
       .then(([channelInfo, videosInfo]) => videosInfo.map(item => Object.assign({}, channelInfo, item)))
-      .then(data => this.constructor.writeToFile(data, channelId))
-      .catch(error => console.error(`Channel '${channelId}' error:`/*, error.response*/))
+      // .then(data => {
+      //   const CsvWriter = new writers.Csv();
+      //   const XlsxWriter = new writers.Xlsx();
+      //   return XlsxWriter.write(data, channelId);
+      // })
+      .catch(error => console.error(`Channel '${channelId}' error:`, /*error*/))
   }
 
-  static writeToFile(data, fileName) {
-    const xls = json2xls(data);
 
-    return new Promise((resolve, reject) => {
-      fs.writeFile(`${config.uploadsDir}/${fileName}.xlsx`, xls, 'binary', (error) => {
-        if (error) return reject(error);
-        return resolve();
-      })
-    });
-  }
-
-  static clearUploadsDir() {
-    return fsExtra.emptyDir(config.uploadsDir);
-  }
 }
 
 module.exports = MainParser;
