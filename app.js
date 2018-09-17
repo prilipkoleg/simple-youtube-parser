@@ -57,7 +57,7 @@ function parseChannel(channelId, clearBefore = false) {
   const MainParser = new mainParser(Youtube);
 
   return (clearBefore)
-    ? mainParser.clearUploadsDir().then(MainParser.start(channelId))
+    ? mainParser.clearUploadsDir().then(() => MainParser.start(channelId))
     : MainParser.start(channelId)
 }
 
