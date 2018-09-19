@@ -3,25 +3,31 @@ const parh = require('path');
 const GoogleApis = require('googleapis');
 
 const config = require('./config');
+const stepIterator = require('./services/StepIterator');
 const mainParser = require('./services/parcer');
-const xlsxWriter = require('./services/writer').Xlsx;
-
 const { youtube_v3 } = GoogleApis;
+const { Xlsx: xlsxWriter, Csv: csvWriter } = require('./services/writer');
+
+const STEP_LIMIT = 5;
 const Youtube = new youtube_v3.Youtube({auth: config.main.apiKey});
-
-const channelsFileData = fs.readFileSync(
-  parh.join(__dirname, config.main.channelsFile),
-  {encoding: 'utf8'}
-);
-
-const channelsList = channelsFileData && channelsFileData.split(config.main.channelsFileDelimiter)
-  .map(id => id.trim()).filter(id => id);
+const channelsList = getChannels();
 
 if (!channelsList.length) throw new Error('channels.csv file contains wrong Data!');
 
+const StepIterator = new stepIterator(
+  2,
+  channelsList,
+  (channelId) => {
+    const MainParser = new mainParser(Youtube);
+    return MainParser.start(channelId);
+  }
+);
+
+return StepIterator.iterate();
+
+
+
 let storage = [];
-const STEP_LIMIT = 50;
-const total = channelsList.length;
 let done = 0;
 
 function make_step() {
@@ -72,14 +78,12 @@ function parseChannel(channelId, clearBefore = false) {
 
 return make_step();//.then(() => console.log('Stop'));
 
-//
-// const promises = channelsList.map((channelId, index) => {
-//   const MainParser = new mainParser(Youtube);
-//
-//   return (index > 0)
-//     ? MainParser.start(channelId)
-//     : MainParser.clearUploadsDir().then(MainParser.start(channelId));
-// });
-//
-// return Promise.all(promises)
-//   .then(() => console.log('Done!'));
+// helpers -------------------
+function getChannels() {
+  const channelsFileData = fs.readFileSync(
+    parh.join(__dirname, config.main.channelsFile),
+    {encoding: 'utf8'}
+  );
+  return channelsFileData && channelsFileData.split(config.main.channelsFileDelimiter)
+    .map(id => id.trim()).filter(id => id);
+}

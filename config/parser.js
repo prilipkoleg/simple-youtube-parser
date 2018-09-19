@@ -7,7 +7,7 @@ const config = {
     list: {
       part: 'snippet',
       order: 'date',
-      maxResults: 50,
+      maxResults: 2,
     },
   },
   video: {

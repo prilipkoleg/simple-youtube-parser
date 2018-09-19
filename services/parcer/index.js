@@ -16,7 +16,13 @@ class MainParser {
       this.ChannelParser.getData(channelId),
       this.VideoParser.getData(channelId)
     ])
-      .then(([channelInfo, videosInfo]) => videosInfo.map(item => Object.assign({}, channelInfo, item)))
+      .then(([channelInfo, videosInfo]) => {
+        const data = videosInfo.map(item => Object.assign({}, channelInfo, item));
+        // const CsvWriter = new writers.Csv();
+          const XlsxWriter = new writers.Xlsx();
+          XlsxWriter.write(data, channelId);
+          return data;
+      })
       // .then(data => {
       //   const CsvWriter = new writers.Csv();
       //   const XlsxWriter = new writers.Xlsx();
