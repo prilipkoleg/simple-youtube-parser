@@ -24,7 +24,9 @@ class ChannelParser extends BaseParser {
       'channel_id': item.id,
       'channel_title': item.snippet.title,
       'channel_publishedAt': item.snippet.publishedAt,
-      'channel_link': `https://www.youtube.com/user/${item.snippet.customUrl}`,
+      'channel_link': item.snippet.customUrl
+        ? `https://www.youtube.com/user/${item.snippet.customUrl}`
+        : `https://www.youtube.com/channel/${item.id}`
       //statistics: item.statistics,
     };
 

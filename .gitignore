@@ -2,4 +2,4 @@
 .env
 channels.csv
 node_modules
-uploads/*
+__results/*

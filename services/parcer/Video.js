@@ -34,7 +34,7 @@ class VideoParser extends BaseParser {
   prepareDataFromResponse(response) {
     const { status, headers, data } = response;
     const item = data && data.items && data.items[0];
-    let videoInfo = null;
+    let videoInfo = {};
 
     if (!item) return videoInfo;
 
