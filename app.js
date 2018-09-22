@@ -8,7 +8,7 @@ const mainParser = require('./services/parcer');
 const { youtube_v3 } = GoogleApis;
 const baseWriter = require('./services/writer/Base');
 
-const STEP_LIMIT = 3;
+const STEP_LIMIT = 50;
 const Youtube = new youtube_v3.Youtube({auth: config.main.apiKey});
 const channelsList = getChannels();
 
