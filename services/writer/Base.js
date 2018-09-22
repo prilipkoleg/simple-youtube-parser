@@ -23,8 +23,25 @@ class Base {
     });
   }
 
+  static appendToFile(data, fileNameWithExtension) {
+    return new Promise((resolve, reject) => {
+      fs
+        .writeFile(
+          `${config.uploadsDir}/${fileNameWithExtension}`, `\n${data}`, {flag: 'a'},
+          (error) => error ? reject(error) : resolve()
+        )
+    });
+  }
+
   static clearUploadsDir() {
     return fsExtra.emptyDir(config.uploadsDir);
+  }
+
+  static fileExists(path) {
+    try {
+      return fs.statSync(`${config.uploadsDir}/${path}`);
+    } catch (ex) {}
+    return false;
   }
 }
 

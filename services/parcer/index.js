@@ -18,17 +18,19 @@ class MainParser {
     ])
       .then(([channelInfo, videosInfo]) => {
         const data = videosInfo.map(item => Object.assign({}, channelInfo, item));
-        // const CsvWriter = new writers.Csv();
-          const XlsxWriter = new writers.Xlsx();
-          XlsxWriter.write(data, channelId);
-          return data;
+
+        const XlsxWriter = new writers.Xlsx();
+        const CsvWriter = new writers.Csv();
+
+        XlsxWriter.write(data, channelId);
+        CsvWriter.writeIntoCommon(data);
+
+        return data;
       })
-      // .then(data => {
-      //   const CsvWriter = new writers.Csv();
-      //   const XlsxWriter = new writers.Xlsx();
-      //   return XlsxWriter.write(data, channelId);
-      // })
-      .catch(error => console.error(`Channel '${channelId}' error:`, /*error*/))
+      .catch(error => console.error(
+        `Channel '${channelId}' error:`,
+        //error
+      ));
   }
 
 

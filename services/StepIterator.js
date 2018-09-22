@@ -18,12 +18,14 @@ class StepIterator {
       .then(() => {
         const itemsCount = this.itemsCount;
         const done = this.itemIndex;
+        const say = (msg) => console.log(`Done: '${done}'`, `Total: '${itemsCount}' -> `, msg)
 
         if (this._isFinish()) {
-          console.log(`Done: '${done}'`, `Total: '${itemsCount}'`, 'FINISHED!');
+          say('FINISHED!');
           return Promise.resolve();
         }
-        console.log(`Done: '${done}'`, `Total: '${itemsCount}'`, 'GO NEXT STEP!');
+
+        say('NEXT STEP -->');
         return getStepPromise();
       });
 
