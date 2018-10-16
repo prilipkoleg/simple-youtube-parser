@@ -6,4 +6,4 @@ Add *./channels.csv* file
 
 Install dependencies: `$ npm install` 
 
-Run: `$npm start`
+Run: `$ npm start`
