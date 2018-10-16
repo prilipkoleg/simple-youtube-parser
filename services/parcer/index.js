@@ -54,7 +54,7 @@ class MainParser {
               const item = data && data.items && data.items[0];
               const channelId = item && item.id;
 
-              return resolve(channelId) || reject('Channel not valid')
+              return channelId && resolve(channelId) || reject('Channel not valid')
             })
             .catch(reject);
         })
